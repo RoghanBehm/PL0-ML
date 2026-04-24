@@ -1,89 +1,3 @@
-datatype token =
-  NUMBER of int
-| IDENTIFIER of string
-| ASSIGN
-| COLON
-| SEMICOLON
-| RANGE
-| LPAREN
-| RPAREN
-| LBRACKET
-| RBRACKET
-| EQUALS
-| NEQUALS
-| GEQUALS
-| LEQUALS
-| GREATER
-| LESS
-| PLUS
-| MINUS
-| TIMES
-| DIVIDE
-| KW_BEGIN
-| KW_CALL
-| KW_CONST
-| KW_DO
-| KW_ELSE
-| KW_END
-| KW_IF
-| KW_PROCEDURE
-| KW_READ
-| KW_THEN
-| KW_TYPE
-| KW_VAR
-| KW_WHILE
-| KW_WRITE;
-
-signature STRING_MAP =
-sig
-  type 'a map
-  val empty: 'a map
-  val insert: 'a map * string * 'a -> 'a map
-  val find: 'a map * string -> 'a option
-  val exists: 'a map * string -> bool
-end
-
-structure StringMap: STRING_MAP =
-struct
-  type 'a map = (string * 'a) list
-
-  val empty: 'a map = []
-
-  fun insert (m, k, v) =
-    (k, v) :: List.filter (fn (k', _) => k <> k') m
-
-  fun find (m, k) =
-    case List.find (fn (k', _) => k = k') m of
-      NONE => NONE
-    | SOME (_, v) => SOME v
-
-  fun exists (m, k) =
-    Option.isSome (find (m, k))
-
-end
-
-val kw_map = StringMap.empty
-val kw_map = StringMap.insert (kw_map, "KW_BEGIN", KW_BEGIN)
-
-
-val kw_map =
-  foldl (fn ((k, v), m) => StringMap.insert (m, k, v)) StringMap.empty
-    [ ("begin", KW_BEGIN)
-    , ("call", KW_CALL)
-    , ("const", KW_CONST)
-    , ("do", KW_DO)
-    , ("else", KW_ELSE)
-    , ("end", KW_END)
-    , ("if", KW_IF)
-    , ("procedure", KW_PROCEDURE)
-    , ("read", KW_READ)
-    , ("then", KW_THEN)
-    , ("type", KW_TYPE)
-    , ("var", KW_VAR)
-    , ("while", KW_WHILE)
-    , ("write", KW_WRITE)
-    ]
-
 signature LEXER =
 sig
   val lex: char list -> token list
@@ -97,6 +11,25 @@ end
 
 structure Lexer: LEXER =
 struct
+
+
+  val kw_map =
+    foldl (fn ((k, v), m) => StringMap.insert (m, k, v)) StringMap.empty
+      [ ("begin", KW_BEGIN)
+      , ("call", KW_CALL)
+      , ("const", KW_CONST)
+      , ("do", KW_DO)
+      , ("else", KW_ELSE)
+      , ("end", KW_END)
+      , ("if", KW_IF)
+      , ("procedure", KW_PROCEDURE)
+      , ("read", KW_READ)
+      , ("then", KW_THEN)
+      , ("type", KW_TYPE)
+      , ("var", KW_VAR)
+      , ("while", KW_WHILE)
+      , ("write", KW_WRITE)
+      ]
 
 
   fun span pred [] = ([], [])
